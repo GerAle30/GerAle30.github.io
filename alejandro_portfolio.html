@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alejandro Garcia Sanchez — Backend Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:      #06090f;
+  --bg2:     #0b1018;
+  --bg3:     #101820;
+  --card:    #0d1520;
+  --line:    rgba(255,255,255,0.06);
+  --line2:   rgba(255,255,255,0.12);
+  --accent:  #00d4aa;
+  --accent2: #4f8fff;
+  --purple:  #a78bfa;
+  --text:    #dde4f0;
+  --muted:   #4e5d70;
+  --muted2:  #8494a8;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* cursor */
+.cursor { width:8px; height:8px; background:var(--accent); border-radius:50%; position:fixed; top:0; left:0; pointer-events:none; z-index:9999; mix-blend-mode:screen; transition:transform .1s; }
+.cursor-ring { width:32px; height:32px; border:1px solid rgba(0,212,170,.35); border-radius:50%; position:fixed; top:0; left:0; pointer-events:none; z-index:9998; transition:width .2s,height .2s,border-color .2s; }
+
+/* grid bg */
+body::after {
+  content:'';
+  position:fixed; inset:0;
+  background-image: linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:64px 64px;
+  pointer-events:none; z-index:0;
+}
+
+/* NAV */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  padding:1.1rem 3rem;
+  display:flex; justify-content:space-between; align-items:center;
+  background:rgba(6,9,15,.88);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line);
+}
+.nav-logo {
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px; letter-spacing:.15em; color:var(--accent); text-decoration:none;
+}
+.nav-links { display:flex; gap:2.5rem; list-style:none; }
+.nav-links a {
+  font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.1em;
+  color:var(--muted); text-decoration:none; transition:color .2s; cursor:none;
+}
+.nav-links a:hover { color:var(--text); }
+.lang-btn {
+  font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.1em;
+  background:none; border:1px solid var(--line2); color:var(--muted2);
+  padding:5px 14px; cursor:none; border-radius:2px; transition:all .2s;
+}
+.lang-btn:hover { border-color:var(--accent); color:var(--accent); }
+
+section { position:relative; z-index:2; }
+
+/* ── HERO ── */
+#hero {
+  min-height:100vh; display:flex; flex-direction:column; justify-content:center;
+  padding:9rem 3rem 5rem; max-width:1140px; margin:0 auto;
+}
+.hero-eyebrow {
+  font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--accent);
+  letter-spacing:.25em; margin-bottom:1.75rem;
+  display:flex; align-items:center; gap:14px;
+  opacity:0; animation:up .7s ease .1s forwards;
+}
+.eyebrow-line { height:1px; width:36px; background:var(--accent); opacity:.5; }
+
+.hero-name {
+  font-size:clamp(3rem,8.5vw,7rem); font-weight:800; line-height:.95;
+  letter-spacing:-.035em; margin-bottom:.5rem;
+  opacity:0; animation:up .8s ease .25s forwards;
+}
+.hero-name .first { color:var(--text); }
+.hero-name .last {
+  background: linear-gradient(110deg, var(--accent) 0%, var(--accent2) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  display:block;
+}
+.hero-role {
+  font-family:'IBM Plex Mono',monospace; font-size:clamp(.85rem,1.5vw,1.05rem);
+  color:var(--muted2); letter-spacing:.05em; margin-bottom:1rem;
+  opacity:0; animation:up .8s ease .4s forwards;
+}
+.hero-tagline {
+  font-size:clamp(1rem,1.8vw,1.2rem); color:var(--muted2); font-weight:300;
+  max-width:560px; line-height:1.75; margin-bottom:2.75rem;
+  opacity:0; animation:up .8s ease .55s forwards;
+}
+.hero-tagline strong { color:var(--text); font-weight:600; }
+.hero-cta {
+  display:flex; gap:1rem; align-items:center; flex-wrap:wrap;
+  opacity:0; animation:up .8s ease .7s forwards;
+}
+.btn-p {
+  background:var(--accent); color:#000; font-weight:600; font-size:13px;
+  padding:13px 28px; text-decoration:none; border-radius:3px; letter-spacing:.03em;
+  transition:all .2s; cursor:none;
+}
+.btn-p:hover { background:#fff; transform:translateY(-2px); }
+.btn-o {
+  border:1px solid var(--line2); color:var(--muted2); font-size:13px;
+  padding:12px 28px; text-decoration:none; border-radius:3px; letter-spacing:.03em;
+  transition:all .2s; cursor:none;
+}
+.btn-o:hover { border-color:var(--text); color:var(--text); }
+
+.hero-scroll {
+  position:absolute; bottom:2.5rem; left:3rem;
+  font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted);
+  letter-spacing:.2em; display:flex; align-items:center; gap:12px;
+  opacity:0; animation:up .8s ease 1s forwards;
+}
+.s-line { width:36px; height:1px; background:linear-gradient(90deg,var(--accent),transparent); }
+
+/* ── ABOUT ── */
+#about {
+  padding:8rem 3rem; max-width:1140px; margin:0 auto;
+  display:grid; grid-template-columns:1fr 1fr; gap:6rem; align-items:start;
+}
+.sec-label {
+  font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--accent);
+  letter-spacing:.25em; margin-bottom:1.5rem;
+  display:flex; align-items:center; gap:12px;
+}
+.sec-label::after { content:''; flex:1; height:1px; background:var(--line); }
+.sec-h { font-size:2.6rem; font-weight:800; line-height:1.05; letter-spacing:-.025em; margin-bottom:1.5rem; }
+.about-p { color:var(--muted2); font-size:15px; line-height:1.8; margin-bottom:.9rem; }
+.about-p strong { color:var(--text); font-weight:600; }
+
+.stats-row { display:flex; gap:2.5rem; margin-top:2.5rem; padding-top:2.5rem; border-top:1px solid var(--line); }
+.stat-n { font-size:2.4rem; font-weight:800; letter-spacing:-.03em; display:block; color:var(--text); }
+.stat-l { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:.12em; }
+
+.stack-section { }
+.stack-cats { display:flex; flex-direction:column; gap:1.5rem; margin-top:.5rem; }
+.cat-label { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:.15em; margin-bottom:8px; }
+.tags-row { display:flex; flex-wrap:wrap; gap:7px; }
+.tag {
+  font-family:'IBM Plex Mono',monospace; font-size:11px;
+  padding:5px 13px; border-radius:2px; letter-spacing:.04em;
+}
+.tag-green  { background:rgba(0,212,170,.1);  color:var(--accent);  border:1px solid rgba(0,212,170,.2); }
+.tag-blue   { background:rgba(79,143,255,.1); color:var(--accent2); border:1px solid rgba(79,143,255,.2); }
+.tag-purple { background:rgba(167,139,250,.1);color:var(--purple);  border:1px solid rgba(167,139,250,.2); }
+
+/* ── PROJECTS ── */
+#projects { padding:8rem 3rem; max-width:1140px; margin:0 auto; }
+.proj-header { margin-bottom:3rem; }
+.proj-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); }
+.proj-card {
+  background:var(--bg); padding:2rem 1.75rem;
+  transition:background .3s; position:relative; overflow:hidden;
+}
+.proj-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transform:scaleX(0); transform-origin:left; transition:transform .4s ease;
+}
+.proj-card:hover { background:var(--card); }
+.proj-card:hover::before { transform:scaleX(1); }
+.proj-card.big { grid-column:span 2; background:var(--card); }
+.proj-card.big::before { transform:scaleX(1); }
+
+.proj-num { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); margin-bottom:1.25rem; transition:color .3s; letter-spacing:.1em; }
+.proj-card:hover .proj-num { color:var(--accent); }
+.proj-name { font-size:1.15rem; font-weight:700; margin-bottom:.65rem; letter-spacing:-.01em; }
+.proj-desc { font-size:13px; color:var(--muted2); line-height:1.7; margin-bottom:1.25rem; }
+.proj-tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:1.25rem; }
+.ptag { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--purple); border:1px solid rgba(167,139,250,.2); padding:3px 9px; border-radius:2px; }
+.proj-link { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); text-decoration:none; letter-spacing:.1em; transition:color .2s; cursor:none; }
+.proj-link:hover { color:var(--accent); }
+
+/* ── EXPERIENCE ── */
+#experience { padding:8rem 3rem; max-width:1140px; margin:0 auto; }
+.exp-list { display:flex; flex-direction:column; gap:0; margin-top:2.5rem; border:1px solid var(--line); }
+.exp-item {
+  padding:2rem 2.25rem; border-bottom:1px solid var(--line);
+  display:grid; grid-template-columns:1fr auto; gap:1.5rem;
+  transition:background .25s;
+}
+.exp-item:last-child { border-bottom:none; }
+.exp-item:hover { background:var(--card); }
+.exp-role { font-size:1.1rem; font-weight:700; margin-bottom:.35rem; letter-spacing:-.01em; }
+.exp-company { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--accent); letter-spacing:.08em; margin-bottom:.85rem; }
+.exp-desc { font-size:13px; color:var(--muted2); line-height:1.75; }
+.exp-date { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:.08em; white-space:nowrap; padding-top:.3rem; }
+
+/* ── SKILLS ── */
+#skills { padding:8rem 3rem; max-width:1140px; margin:0 auto; }
+.skills-grid { display:grid; grid-template-columns:1fr 1fr; gap:3rem; margin-top:2.5rem; }
+.skill-row { margin-bottom:1.4rem; }
+.skill-top { display:flex; justify-content:space-between; margin-bottom:7px; }
+.skill-name { font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text); }
+.skill-pct  { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted); }
+.skill-track { height:2px; background:var(--line); overflow:hidden; }
+.skill-fill { height:100%; width:0; background:linear-gradient(90deg,var(--accent2),var(--accent)); transition:width 1.3s cubic-bezier(.16,1,.3,1); }
+
+/* ── CONTACT ── */
+#contact { padding:8rem 3rem 5rem; max-width:1140px; margin:0 auto; text-align:center; }
+.contact-h { font-size:clamp(2.5rem,7vw,5.5rem); font-weight:800; line-height:.95; letter-spacing:-.035em; margin-bottom:1.5rem; }
+.contact-h span { background:linear-gradient(110deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.contact-sub { color:var(--muted2); font-size:15px; max-width:420px; margin:0 auto 2.75rem; line-height:1.75; }
+.c-links { display:flex; justify-content:center; gap:1rem; flex-wrap:wrap; }
+.c-link {
+  font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted2);
+  text-decoration:none; border:1px solid var(--line2); padding:12px 22px;
+  display:flex; align-items:center; gap:9px; border-radius:3px;
+  transition:all .25s; cursor:none; letter-spacing:.08em;
+}
+.c-link:hover { border-color:var(--accent); color:var(--accent); transform:translateY(-3px); }
+
+footer {
+  position:relative; z-index:2;
+  border-top:1px solid var(--line); padding:1.75rem 3rem;
+  display:flex; justify-content:space-between; align-items:center;
+  max-width:1140px; margin:0 auto;
+}
+.footer-t { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:.1em; }
+.footer-t span { color:var(--accent); }
+
+@keyframes up { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:none} }
+.reveal { opacity:0; transform:translateY(28px); transition:opacity .7s ease,transform .7s ease; }
+.reveal.visible { opacity:1; transform:none; }
+
+@media(max-width:768px){
+  nav{padding:1rem 1.5rem;}
+  .nav-links{display:none;}
+  #hero{padding:7rem 1.5rem 4rem;}
+  #about,#skills{grid-template-columns:1fr; gap:3rem; padding:5rem 1.5rem;}
+  .skills-grid{grid-template-columns:1fr;}
+  #projects,#experience,#contact{padding:5rem 1.5rem;}
+  .proj-grid{grid-template-columns:1fr;}
+  .proj-card.big{grid-column:span 1;}
+  .exp-item{grid-template-columns:1fr;}
+  footer{flex-direction:column;gap:.6rem;text-align:center;padding:1.75rem 1.5rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="curR"></div>
+
+<nav>
+  <a href="#" class="nav-logo">AGS_DEV</a>
+  <ul class="nav-links">
+    <li><a href="#about"      data-es="Sobre mí"    data-en="About">Sobre mí</a></li>
+    <li><a href="#projects"   data-es="Proyectos"   data-en="Projects">Proyectos</a></li>
+    <li><a href="#experience" data-es="Experiencia" data-en="Experience">Experiencia</a></li>
+    <li><a href="#skills"     data-es="Skills"      data-en="Skills">Skills</a></li>
+    <li><a href="#contact"    data-es="Contacto"    data-en="Contact">Contacto</a></li>
+  </ul>
+  <button class="lang-btn" id="langBtn">EN</button>
+</nav>
+
+<!-- ── HERO ── -->
+<section id="hero">
+  <div class="hero-eyebrow">
+    <div class="eyebrow-line"></div>
+    <span data-es="// DISPONIBLE PARA TRABAJO" data-en="// AVAILABLE FOR WORK">// DISPONIBLE PARA TRABAJO</span>
+  </div>
+  <h1 class="hero-name">
+    <span class="first">Alejandro Garcia</span>
+    <span class="last">Sanchez</span>
+  </h1>
+  <p class="hero-role" data-es="BACKEND DEVELOPER · SAN JUAN, PR" data-en="BACKEND DEVELOPER · SAN JUAN, PR">BACKEND DEVELOPER · SAN JUAN, PR</p>
+  <p class="hero-tagline" data-es="Desarrollador especializado en <strong>arquitectura backend</strong>, APIs RESTful y bases de datos. Graduado de Holberton Coding School con experiencia en Python, C, SQL y plataformas cloud." data-en="Developer specialized in <strong>backend architecture</strong>, RESTful APIs, and databases. Holberton Coding School graduate with experience in Python, C, SQL, and cloud platforms.">
+    Desarrollador especializado en <strong>arquitectura backend</strong>, APIs RESTful y bases de datos. Graduado de Holberton Coding School con experiencia en Python, C, SQL y plataformas cloud.
+  </p>
+  <div class="hero-cta">
+    <a href="#projects" class="btn-p" data-es="Ver proyectos" data-en="View projects">Ver proyectos</a>
+    <a href="https://github.com/GerAle30" target="_blank" class="btn-o">GitHub ↗</a>
+    <a href="mailto:Garciasalj@gmail.com" class="btn-o" data-es="Contactar" data-en="Contact">Contactar</a>
+  </div>
+  <div class="hero-scroll"><div class="s-line"></div><span data-es="SCROLL" data-en="SCROLL">SCROLL</span></div>
+</section>
+
+<!-- ── ABOUT ── -->
+<section id="about">
+  <div class="reveal">
+    <div class="sec-label" data-es="SOBRE MÍ" data-en="ABOUT ME">SOBRE MÍ</div>
+    <h2 class="sec-h" data-es="Backend dev con mentalidad de resolver problemas." data-en="Backend dev with a problem-solving mindset.">Backend dev con mentalidad de resolver problemas.</h2>
+    <p class="about-p" data-es="Soy un <strong>desarrollador backend</strong> con sólida formación en Holberton Coding School (San Juan, PR). Me especializo en construir APIs robustas, manejar bases de datos relacionales y diseñar sistemas escalables." data-en="I'm a <strong>backend developer</strong> with strong training from Holberton Coding School (San Juan, PR). I specialize in building robust APIs, managing relational databases, and designing scalable systems.">
+      Soy un <strong>desarrollador backend</strong> con sólida formación en Holberton Coding School (San Juan, PR). Me especializo en construir APIs robustas, manejar bases de datos relacionales y diseñar sistemas escalables.
+    </p>
+    <p class="about-p" data-es="Mi experiencia abarca desde desarrollo en <strong>C de bajo nivel</strong> hasta aplicaciones full stack con Python/Flask y APIs REST. También tengo un historial en atención al cliente de alto nivel que refuerza mis habilidades de comunicación y trabajo en equipo." data-en="My experience spans from <strong>low-level C development</strong> to full stack apps with Python/Flask and REST APIs. I also have a background in high-end customer service that strengthens my communication and teamwork skills.">
+      Mi experiencia abarca desde desarrollo en <strong>C de bajo nivel</strong> hasta aplicaciones full stack con Python/Flask y APIs REST. También tengo un historial en atención al cliente de alto nivel que refuerza mis habilidades de comunicación y trabajo en equipo.
+    </p>
+    <div class="stats-row">
+      <div><span class="stat-n">5+</span><span class="stat-l" data-es="PROYECTOS" data-en="PROJECTS">PROYECTOS</span></div>
+      <div><span class="stat-n">2</span><span class="stat-l" data-es="IDIOMAS" data-en="LANGUAGES">IDIOMAS</span></div>
+      <div><span class="stat-n">PR</span><span class="stat-l" data-es="BASADO EN" data-en="BASED IN">BASADO EN</span></div>
+    </div>
+  </div>
+  <div class="stack-section reveal">
+    <div class="sec-label" data-es="TECH STACK" data-en="TECH STACK">TECH STACK</div>
+    <div class="stack-cats">
+      <div>
+        <div class="cat-label" data-es="LENGUAJES" data-en="LANGUAGES">LENGUAJES</div>
+        <div class="tags-row">
+          <span class="tag tag-green">Python</span>
+          <span class="tag tag-green">C</span>
+          <span class="tag tag-green">JavaScript</span>
+          <span class="tag tag-green">SQL</span>
+          <span class="tag tag-green">HTML</span>
+        </div>
+      </div>
+      <div>
+        <div class="cat-label" data-es="FRAMEWORKS &amp; LIBS" data-en="FRAMEWORKS &amp; LIBS">FRAMEWORKS &amp; LIBS</div>
+        <div class="tags-row">
+          <span class="tag tag-blue">Flask</span>
+          <span class="tag tag-blue">FastAPI</span>
+          <span class="tag tag-blue">Node.js</span>
+          <span class="tag tag-blue">Express</span>
+          <span class="tag tag-blue">React</span>
+        </div>
+      </div>
+      <div>
+        <div class="cat-label" data-es="BASES DE DATOS &amp; OPS" data-en="DATABASES &amp; OPS">BASES DE DATOS &amp; OPS</div>
+        <div class="tags-row">
+          <span class="tag tag-purple">MySQL</span>
+          <span class="tag tag-purple">PostgreSQL</span>
+          <span class="tag tag-purple">Docker</span>
+          <span class="tag tag-purple">Git</span>
+          <span class="tag tag-purple">Linux</span>
+          <span class="tag tag-purple">REST APIs</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROJECTS ── -->
+<section id="projects">
+  <div class="proj-header reveal">
+    <div class="sec-label" data-es="PROYECTOS DESTACADOS" data-en="FEATURED PROJECTS">PROYECTOS DESTACADOS</div>
+    <h2 class="sec-h" data-es="Lo que he construido." data-en="What I've built.">Lo que he construido.</h2>
+  </div>
+  <div class="proj-grid reveal">
+
+    <div class="proj-card big">
+      <div class="proj-num">01 — FEATURED</div>
+      <h3 class="proj-name" data-es="SeatServe — Backend de Reservas" data-en="SeatServe — Reservations Backend">SeatServe — Backend de Reservas</h3>
+      <p class="proj-desc" data-es="Backend completo para un proyecto Demo Day. Desarrollé APIs RESTful que permiten integración fluida con el frontend, scripts SQL para optimizar integridad y rendimiento de la base de datos, y arquitectura robusta lista para producción." data-en="Full backend for a Demo Day project. Built RESTful APIs enabling seamless frontend integration, SQL scripts to optimize database integrity and performance, and robust production-ready architecture.">
+        Backend completo para un proyecto Demo Day. Desarrollé APIs RESTful que permiten integración fluida con el frontend, scripts SQL para optimizar integridad y rendimiento de la base de datos, y arquitectura robusta lista para producción.
+      </p>
+      <div class="proj-tags">
+        <span class="ptag">PYTHON</span><span class="ptag">FLASK</span><span class="ptag">SQL</span><span class="ptag">REST API</span><span class="ptag">POSTGRESQL</span>
+      </div>
+      <a href="https://github.com/GerAle30" target="_blank" class="proj-link" data-es="↗ VER EN GITHUB" data-en="↗ VIEW ON GITHUB">↗ VER EN GITHUB</a>
+    </div>
+
+    <div class="proj-card">
+      <div class="proj-num">02</div>
+      <h3 class="proj-name">HBNB Evolution</h3>
+      <p class="proj-desc" data-es="Clon de Airbnb full stack con Flask y SQL. Aplicaciones web responsive con React, REST APIs y modelos de datos para listings de propiedades." data-en="Full stack Airbnb clone with Flask and SQL. Responsive web apps with React, REST APIs and data models for property listings.">
+        Clon de Airbnb full stack con Flask y SQL. Aplicaciones web responsive con React, REST APIs y modelos de datos para listings de propiedades.
+      </p>
+      <div class="proj-tags">
+        <span class="ptag">FLASK</span><span class="ptag">REACT</span><span class="ptag">SQL</span><span class="ptag">JS</span>
+      </div>
+      <a href="https://github.com/GerAle30" target="_blank" class="proj-link" data-es="↗ VER EN GITHUB" data-en="↗ VIEW ON GITHUB">↗ VER EN GITHUB</a>
+    </div>
+
+    <div class="proj-card">
+      <div class="proj-num">03</div>
+      <h3 class="proj-name">Simple Shell</h3>
+      <p class="proj-desc" data-es="Shell Unix escrita en C desde cero. Implementé manejo de input del usuario, protocolos de testing, y control de versiones con Git y SVN." data-en="Unix shell written in C from scratch. Implemented user input handling, testing protocols, and version control with Git and SVN.">
+        Shell Unix escrita en C desde cero. Implementé manejo de input del usuario, protocolos de testing, y control de versiones con Git y SVN.
+      </p>
+      <div class="proj-tags">
+        <span class="ptag">C</span><span class="ptag">UNIX</span><span class="ptag">GIT</span><span class="ptag">SVN</span>
+      </div>
+      <a href="https://github.com/GerAle30" target="_blank" class="proj-link" data-es="↗ VER EN GITHUB" data-en="↗ VIEW ON GITHUB">↗ VER EN GITHUB</a>
+    </div>
+
+    <div class="proj-card">
+      <div class="proj-num">04</div>
+      <h3 class="proj-name">Printf Project</h3>
+      <p class="proj-desc" data-es="Recreación de printf() en C con soporte para múltiples format specifiers. Enfoque en modularidad, reuso de código y calidad colaborativa." data-en="Recreation of printf() in C supporting multiple format specifiers. Focus on modularity, code reuse, and collaborative quality.">
+        Recreación de printf() en C con soporte para múltiples format specifiers. Enfoque en modularidad, reuso de código y calidad colaborativa.
+      </p>
+      <div class="proj-tags">
+        <span class="ptag">C</span><span class="ptag">ALGORITHMS</span><span class="ptag">MODULAR CODE</span>
+      </div>
+      <a href="https://github.com/GerAle30" target="_blank" class="proj-link" data-es="↗ VER EN GITHUB" data-en="↗ VIEW ON GITHUB">↗ VER EN GITHUB</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── EXPERIENCE ── -->
+<section id="experience">
+  <div class="reveal">
+    <div class="sec-label" data-es="EXPERIENCIA" data-en="EXPERIENCE">EXPERIENCIA</div>
+    <h2 class="sec-h" data-es="Trayectoria profesional." data-en="Professional background.">Trayectoria profesional.</h2>
+  </div>
+  <div class="exp-list reveal">
+
+    <div class="exp-item">
+      <div>
+        <div class="exp-role" data-es="Backend Developer" data-en="Backend Developer">Backend Developer</div>
+        <div class="exp-company">SEATSERVE PROJECT</div>
+        <p class="exp-desc" data-es="Desarrollé aplicaciones backend y APIs RESTful para el proyecto Demo Day. Creé scripts SQL para mejorar la integridad y el rendimiento de la base de datos, asegurando integración fluida con el equipo frontend." data-en="Developed backend applications and RESTful APIs for the Demo Day project. Created SQL scripts to improve database integrity and performance, ensuring seamless frontend team integration.">
+          Desarrollé aplicaciones backend y APIs RESTful para el proyecto Demo Day. Creé scripts SQL para mejorar la integridad y el rendimiento de la base de datos, asegurando integración fluida con el equipo frontend.
+        </p>
+      </div>
+      <div class="exp-date">09/2025 – 11/2025</div>
+    </div>
+
+    <div class="exp-item">
+      <div>
+        <div class="exp-role" data-es="Full Stack Developer (Proyecto)" data-en="Full Stack Developer (Project)">Full Stack Developer (Proyecto)</div>
+        <div class="exp-company">HBNB EVOLUTION PROJECT</div>
+        <p class="exp-desc" data-es="Construí aplicaciones web responsive con JavaScript y React. Implementé REST APIs y modelos de datos, e integré APIs para optimizar el intercambio de datos en una plataforma tipo Airbnb con Flask y SQL." data-en="Built responsive web applications with JavaScript and React. Implemented REST APIs and data models, and integrated APIs to optimize data exchange in an Airbnb-like platform using Flask and SQL.">
+          Construí aplicaciones web responsive con JavaScript y React. Implementé REST APIs y modelos de datos, e integré APIs para optimizar el intercambio de datos en una plataforma tipo Airbnb con Flask y SQL.
+        </p>
+      </div>
+      <div class="exp-date" data-es="HOLBERTON" data-en="HOLBERTON">HOLBERTON</div>
+    </div>
+
+    <div class="exp-item">
+      <div>
+        <div class="exp-role" data-es="C Developer" data-en="C Developer">C Developer</div>
+        <div class="exp-company">SIMPLE SHELL + PRINTF PROJECTS</div>
+        <p class="exp-desc" data-es="Desarrollé aplicaciones en C desde cero, implementé testing para detectar y optimizar bugs, utilicé Git y SVN para control de versiones, y colaboré en equipo para resolver issues durante fases de desarrollo." data-en="Developed C applications from scratch, implemented testing to detect and optimize bugs, used Git and SVN for version control, and collaborated in team to resolve issues during development phases.">
+          Desarrollé aplicaciones en C desde cero, implementé testing para detectar y optimizar bugs, utilicé Git y SVN para control de versiones, y colaboré en equipo para resolver issues durante fases de desarrollo.
+        </p>
+      </div>
+      <div class="exp-date" data-es="HOLBERTON" data-en="HOLBERTON">HOLBERTON</div>
+    </div>
+
+  </div>
+
+  <!-- Education -->
+  <div style="margin-top:3rem;" class="reveal">
+    <div class="sec-label" data-es="EDUCACIÓN" data-en="EDUCATION">EDUCACIÓN</div>
+    <div class="exp-list">
+      <div class="exp-item">
+        <div>
+          <div class="exp-role">Software Engineering Certificate</div>
+          <div class="exp-company">HOLBERTON CODING SCHOOL · SAN JUAN, PR</div>
+          <p class="exp-desc" data-es="Programa intensivo de ingeniería de software cubriendo C, Python, JavaScript, bases de datos, DevOps y arquitectura de sistemas." data-en="Intensive software engineering program covering C, Python, JavaScript, databases, DevOps, and systems architecture.">
+            Programa intensivo de ingeniería de software cubriendo C, Python, JavaScript, bases de datos, DevOps y arquitectura de sistemas.
+          </p>
+        </div>
+        <div class="exp-date">11/2025</div>
+      </div>
+      <div class="exp-item">
+        <div>
+          <div class="exp-role">Banking Certificate</div>
+          <div class="exp-company">NUC UNIVERSITY · CAGUAS, PR</div>
+        </div>
+        <div class="exp-date">07/2018</div>
+      </div>
+      <div class="exp-item">
+        <div>
+          <div class="exp-role" data-es="Bachillerato en Artes" data-en="Bachelor of Arts">Bachillerato en Artes</div>
+          <div class="exp-company">UNIVERSIDAD DE TURABO · GURABO, PR</div>
+        </div>
+        <div class="exp-date">—</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SKILLS ── -->
+<section id="skills">
+  <div class="reveal">
+    <div class="sec-label" data-es="HABILIDADES TÉCNICAS" data-en="TECHNICAL SKILLS">HABILIDADES TÉCNICAS</div>
+    <h2 class="sec-h" data-es="Stack y dominio." data-en="Stack and proficiency.">Stack y dominio.</h2>
+  </div>
+  <div class="skills-grid reveal">
+    <div>
+      <div class="skill-row"><div class="skill-top"><span class="skill-name">Python</span><span class="skill-pct">90%</span></div><div class="skill-track"><div class="skill-fill" data-pct="90"></div></div></div>
+      <div class="skill-row"><div class="skill-top"><span class="skill-name">REST API Development</span><span class="skill-pct">92%</span></div><div class="skill-track"><div class="skill-fill" data-pct="92"></div></div></div>
+      <div class="skill-row"><div class="skill-top"><span class="skill-name">Flask / FastAPI</span><span class="skill-pct">85%</span></div><div class="skill-track"><div class="skill-fill" data-pct="85"></div></div></div>
+      <div class="skill-row"><div class="skill-top"><span class="skill-name">SQL / PostgreSQL / MySQL</span><span class="skill-pct">87%</span></div><div class="skill-track"><div class="skill-fill" data-pct="87"></div></div></div>
+      <div class="skill-row"><div class="skill-top"><span class="skill-name">C Programming</span><span class="skill-pct">82%</span></div><div class="skill-track"><div class="skill-fill" data-pct="82"></div></div></div>
+    </div>
+    <div>
+      <div class="skill-row"><div class="skill-top"><span class="skill-name">JavaScript / Node.js</span><span class="skill-pct">78%</span></div><div class="skill-track"><div class="skill-fill" data-pct="78"></div></div></div>
+      <div class="skill-row"><div class="skill-top"><span class="skill-name">Linux / Shell</span><span class="skill-pct">85%</span></div><div class="skill-track"><div class="skill-fill" data-pct="85"></div></div></div>
+      <div class="skill-row"><div class="skill-top"><span class="skill-name">Docker / DevOps</span><span class="skill-pct">72%</span></div><div class="skill-track"><div class="skill-fill" data-pct="72"></div></div></div>
+      <div class="skill-row"><div class="skill-top"><span class="skill-name">Git / Version Control</span><span class="skill-pct">88%</span></div><div class="skill-track"><div class="skill-fill" data-pct="88"></div></div></div>
+      <div class="skill-row"><div class="skill-top"><span class="skill-name">React / Frontend</span><span class="skill-pct">68%</span></div><div class="skill-track"><div class="skill-fill" data-pct="68"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
+<section id="contact">
+  <div class="sec-label reveal" style="justify-content:center" data-es="CONTACTO" data-en="CONTACT">CONTACTO</div>
+  <h2 class="contact-h reveal">
+    <span data-es="¿Trabajamos juntos?" data-en="Let's build together?">¿Trabajamos juntos?</span>
+  </h2>
+  <p class="contact-sub reveal" data-es="Abierto a oportunidades de trabajo, proyectos freelance y colaboraciones. Basado en San Juan, PR — disponible de forma remota." data-en="Open to job opportunities, freelance projects, and collaborations. Based in San Juan, PR — available remotely.">
+    Abierto a oportunidades de trabajo, proyectos freelance y colaboraciones. Basado en San Juan, PR — disponible de forma remota.
+  </p>
+  <div class="c-links reveal">
+    <a href="mailto:Garciasalj@gmail.com" class="c-link">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 7L2 7"/></svg>
+      Garciasalj@gmail.com
+    </a>
+    <a href="https://github.com/GerAle30" target="_blank" class="c-link">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+      github.com/GerAle30
+    </a>
+    <a href="tel:9392400251" class="c-link">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+      (939) 240-0251
+    </a>
+  </div>
+</section>
+
+<footer>
+  <p class="footer-t">© 2025 <span>Alejandro Garcia Sanchez</span></p>
+  <p class="footer-t" data-es="San Juan, Puerto Rico" data-en="San Juan, Puerto Rico">San Juan, Puerto Rico</p>
+</footer>
+
+<script>
+// Cursor
+const cur = document.getElementById('cur');
+const curR = document.getElementById('curR');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX; my=e.clientY;
+  cur.style.transform=`translate(${mx-4}px,${my-4}px)`;
+});
+(function loop(){
+  rx+=(mx-rx)*.1; ry+=(my-ry)*.1;
+  curR.style.transform=`translate(${rx-16}px,${ry-16}px)`;
+  requestAnimationFrame(loop);
+})();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{ curR.style.width='48px'; curR.style.height='48px'; curR.style.borderColor='rgba(0,212,170,.65)'; });
+  el.addEventListener('mouseleave',()=>{ curR.style.width='32px'; curR.style.height='32px'; curR.style.borderColor='rgba(0,212,170,.35)'; });
+});
+
+// Scroll reveal + skill bars
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      e.target.querySelectorAll('.skill-fill').forEach(b=>{ b.style.width=b.dataset.pct+'%'; });
+    }
+  });
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// Language toggle — default EN
+let isEN=true;
+function applyLang(){
+  document.getElementById('langBtn').textContent=isEN?'ES':'EN';
+  document.querySelectorAll('[data-es]').forEach(el=>{
+    const t=isEN?el.dataset.en:el.dataset.es;
+    if(t) el.innerHTML=t;
+  });
+}
+document.addEventListener('DOMContentLoaded', applyLang);
+document.getElementById('langBtn').addEventListener('click',()=>{
+  isEN=!isEN;
+  applyLang();
+});
+</script>
+</body>
+</html>
