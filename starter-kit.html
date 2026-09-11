@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Menu Description Starter Kit — FastAPI + Gemini | Alejandro Garcia Sanchez</title>
+<meta name="description" content="A real FastAPI + Google Gemini AI-integration pattern, pulled straight from a production app. Routers, services, config that fails fast, tested error handling — not a toy demo. $9 on Gumroad.">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="AI Menu Description Starter Kit — FastAPI + Gemini">
+<meta property="og:description" content="A real FastAPI + Google Gemini AI-integration pattern, pulled straight from a production app. Routers, services, config that fails fast, tested error handling.">
+<meta property="og:image" content="https://gerale30.github.io/assets/starter-kit-cover.jpg">
+<meta property="og:url" content="https://gerale30.github.io/starter-kit.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AI Menu Description Starter Kit — FastAPI + Gemini">
+<meta name="twitter:description" content="A real FastAPI + Google Gemini AI-integration pattern, pulled straight from a production app.">
+<meta name="twitter:image" content="https://gerale30.github.io/assets/starter-kit-cover.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+--bg: #06090f;
+--bg2: #0b1018;
+--bg3: #101820;
+--card: #0d1520;
+--line: rgba(255,255,255,0.06);
+--line2: rgba(255,255,255,0.12);
+--accent: #00d4aa;
+--accent2: #4f8fff;
+--purple: #a78bfa;
+--pink: #ff3ca4;
+--orange: #ff7a3d;
+--yellow: #ffd23f;
+--text: #dde4f0;
+--muted: #4e5d70;
+--muted2: #8494a8;
+}
+
+html { scroll-behavior: smooth; }
+body {
+background: var(--bg);
+color: var(--text);
+font-family: 'Outfit', sans-serif;
+font-size: 16px;
+line-height: 1.6;
+overflow-x: hidden;
+}
+
+body::after {
+content:'';
+position:fixed; inset:0;
+background-image: linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+background-size:64px 64px;
+pointer-events:none; z-index:0;
+}
+
+section, header, footer { position:relative; z-index:2; }
+
+nav {
+position:fixed; top:0; left:0; right:0; z-index:100;
+padding:1.1rem 3rem;
+display:flex; justify-content:space-between; align-items:center;
+background:rgba(6,9,15,.88);
+backdrop-filter:blur(18px);
+border-bottom:1px solid var(--line);
+}
+.nav-logo {
+font-family:'IBM Plex Mono',monospace;
+font-size:12px; letter-spacing:.15em; color:var(--accent); text-decoration:none;
+}
+.nav-back {
+font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.08em;
+color:var(--muted2); text-decoration:none; transition:color .2s;
+}
+.nav-back:hover { color:var(--text); }
+
+/* HERO */
+#hero {
+min-height:92vh; display:flex; flex-direction:column; justify-content:center;
+padding:9rem 3rem 4rem; max-width:1140px; margin:0 auto;
+}
+.hero-eyebrow {
+font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--accent);
+letter-spacing:.25em; margin-bottom:1.75rem;
+display:flex; align-items:center; gap:14px;
+}
+.eyebrow-line { height:1px; width:36px; background:var(--accent); opacity:.5; }
+
+.hero-name {
+font-size:clamp(2.6rem,7.5vw,5.6rem); font-weight:800; line-height:1.02;
+letter-spacing:-.03em; margin-bottom:1.25rem;
+}
+.hero-name .grad {
+background: linear-gradient(100deg, var(--pink) 0%, var(--orange) 50%, var(--yellow) 100%);
+-webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+display:block;
+}
+.hero-tagline {
+font-size:clamp(1rem,1.8vw,1.25rem); color:var(--muted2); font-weight:300;
+max-width:620px; line-height:1.75; margin-bottom:2.5rem;
+}
+.hero-tagline strong { color:var(--text); font-weight:600; }
+.hero-cta {
+display:flex; gap:1rem; align-items:center; flex-wrap:wrap; margin-bottom: 3rem;
+}
+.btn-p {
+background: linear-gradient(100deg, var(--pink), var(--orange));
+color:#0a0510; font-weight:700; font-size:13px;
+padding:14px 30px; text-decoration:none; border-radius:3px; letter-spacing:.03em;
+transition:all .2s;
+}
+.btn-p:hover { filter:brightness(1.1); transform:translateY(-2px); }
+.btn-o {
+border:1px solid var(--line2); color:var(--muted2); font-size:13px;
+padding:13px 28px; text-decoration:none; border-radius:3px; letter-spacing:.03em;
+transition:all .2s;
+}
+.btn-o:hover { border-color:var(--text); color:var(--text); }
+
+.hero-cover { width:100%; max-width:900px; border-radius:8px; border:1px solid var(--line2); overflow:hidden; }
+.hero-cover img { width:100%; display:block; }
+
+/* generic section */
+section.block { padding:6rem 3rem; max-width:1140px; margin:0 auto; }
+.sec-label {
+font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--accent);
+letter-spacing:.25em; margin-bottom:1.5rem;
+display:flex; align-items:center; gap:12px;
+}
+.sec-label::after { content:''; flex:1; height:1px; background:var(--line); }
+.sec-h { font-size:2.2rem; font-weight:800; line-height:1.1; letter-spacing:-.02em; margin-bottom:1.5rem; }
+.p { color:var(--muted2); font-size:15px; line-height:1.85; margin-bottom:1rem; max-width:720px; }
+.p strong { color:var(--text); font-weight:600; }
+
+/* what's inside grid */
+.inside-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--line); border:1px solid var(--line); margin-top:2rem; }
+.inside-card { background:var(--bg); padding:1.75rem; transition:background .3s; }
+.inside-card:hover { background:var(--card); }
+.inside-title { font-size:1rem; font-weight:700; margin-bottom:.5rem; display:flex; align-items:center; gap:10px; }
+.inside-title .dot { width:7px; height:7px; border-radius:50%; background:var(--accent); box-shadow:0 0 8px var(--accent); flex-shrink:0; }
+.inside-desc { font-size:13px; color:var(--muted2); line-height:1.7; }
+
+/* code block */
+.code-card {
+background:var(--card); border:1px solid var(--line2); border-radius:6px;
+margin-top:2rem; overflow:hidden;
+}
+.code-head {
+padding:.75rem 1.25rem; border-bottom:1px solid var(--line);
+font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted2); letter-spacing:.05em;
+}
+.code-body {
+padding:1.5rem; font-family:'IBM Plex Mono',monospace; font-size:12.5px; line-height:1.85;
+color:#c7d3e6; overflow-x:auto; white-space:pre;
+}
+.code-body .kw { color:var(--purple); }
+.code-body .fn { color:var(--accent2); }
+.code-body .str { color:var(--accent); }
+.code-body .cm { color:var(--muted); font-style:italic; }
+
+/* honest callout */
+.honest {
+border-left:3px solid var(--yellow); background:rgba(255,210,63,.05);
+padding:1.5rem 1.75rem; margin-top:2rem; border-radius:0 6px 6px 0;
+}
+.honest-h { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--yellow); letter-spacing:.1em; margin-bottom:.75rem; }
+.honest p { color:var(--muted2); font-size:14px; line-height:1.8; }
+.honest p strong { color:var(--text); }
+
+/* final CTA */
+#final-cta { padding:6rem 3rem 5rem; max-width:1140px; margin:0 auto; text-align:center; }
+.cta-h { font-size:clamp(2rem,6vw,3.4rem); font-weight:800; line-height:1.05; letter-spacing:-.03em; margin-bottom:1.25rem; }
+.cta-h span {
+background: linear-gradient(100deg, var(--pink), var(--orange), var(--yellow));
+-webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.cta-sub { color:var(--muted2); font-size:15px; max-width:460px; margin:0 auto 2.5rem; line-height:1.75; }
+.cta-price { font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--muted); margin-top:1.5rem; letter-spacing:.08em; }
+
+footer {
+border-top:1px solid var(--line); padding:1.75rem 3rem;
+display:flex; justify-content:space-between; align-items:center;
+max-width:1140px; margin:0 auto; flex-wrap:wrap; gap:1rem;
+}
+.footer-t { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:.1em; }
+.footer-t span { color:var(--accent); }
+.footer-links { display:flex; gap:1.5rem; }
+.footer-links a { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted2); text-decoration:none; letter-spacing:.08em; }
+.footer-links a:hover { color:var(--accent); }
+
+@media(max-width:768px){
+nav{padding:1rem 1.5rem;}
+#hero{padding:7rem 1.5rem 3rem;}
+section.block{padding:4rem 1.5rem;}
+#final-cta{padding:4rem 1.5rem;}
+.inside-grid{grid-template-columns:1fr;}
+footer{flex-direction:column;text-align:center;padding:1.75rem 1.5rem;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+<a href="index.html" class="nav-logo">AGS_DEV</a>
+<a href="index.html#projects" class="nav-back">← BACK TO PORTFOLIO</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+<div class="hero-eyebrow">
+<div class="eyebrow-line"></div>
+<span>// STARTER KIT · FASTAPI + GEMINI</span>
+</div>
+<h1 class="hero-name">
+AI Menu Description
+<span class="grad">Starter Kit</span>
+</h1>
+<p class="hero-tagline">
+A real backend pattern pulled straight from <strong>materia-AI</strong>, my production app — not a stripped-down tutorial demo. Routers separated from services, config that fails fast, and error handling that actually tells you what broke.
+</p>
+<div class="hero-cta">
+<a href="https://saljazz5.gumroad.com/l/ujogq" target="_blank" class="btn-p">Get the Starter Kit — $9 ↗</a>
+<a href="https://github.com/GerAle30/materia-ai" target="_blank" class="btn-o">View source on GitHub ↗</a>
+</div>
+<div class="hero-cover">
+<img src="assets/starter-kit-cover.jpg" alt="AI Menu Description Starter Kit — FastAPI + Gemini, cover image">
+</div>
+</section>
+
+<!-- THE STORY -->
+<section class="block">
+<div class="sec-label">THE PROBLEM</div>
+<h2 class="sec-h">I kept rebuilding the same backend, project after project.</h2>
+<p class="p">
+Every time I started a new AI-integration project, I noticed I was rebuilding the exact same thing: routers separated from services, config that crashes loudly on startup instead of failing mysteriously mid-request, and error handling that actually distinguishes "the AI provider is down" from "the AI answered, but the format is garbage."
+</p>
+<p class="p">
+So instead of rebuilding it a fifth time, I packaged the real pattern — the one that runs <strong>materia-AI</strong>, a bilingual menu-description generator for restaurants — into a starter kit anyone can drop into their own project.
+</p>
+</section>
+
+<!-- WHAT'S INSIDE -->
+<section class="block">
+<div class="sec-label">WHAT'S INSIDE</div>
+<h2 class="sec-h">Not a toy demo.</h2>
+<div class="inside-grid">
+<div class="inside-card">
+<div class="inside-title"><span class="dot"></span>Google Gemini free tier</div>
+<div class="inside-desc">No paid API credits needed to run it yourself — Gemini's free tier is enough to try the whole thing end to end.</div>
+</div>
+<div class="inside-card">
+<div class="inside-title"><span class="dot"></span>Clean separation of concerns</div>
+<div class="inside-desc">Routers, services, and schemas kept apart — not a wall of code in one file. Easy to read, easy to extend.</div>
+</div>
+<div class="inside-card">
+<div class="inside-title"><span class="dot"></span>5 passing tests</div>
+<div class="inside-desc">Health check, a successful generation, validation, and both AI failure modes — all mocked, so they run instantly with zero API cost.</div>
+</div>
+<div class="inside-card">
+<div class="inside-title"><span class="dot"></span>Config that fails fast</div>
+<div class="inside-desc">Missing an environment variable? It crashes on startup with a clear message — not three requests into production.</div>
+</div>
+<div class="inside-card">
+<div class="inside-title"><span class="dot"></span>Configurable model name</div>
+<div class="inside-desc">Swap Gemini models without touching code — one environment variable.</div>
+</div>
+<div class="inside-card">
+<div class="inside-title"><span class="dot"></span>Bilingual output, end to end</div>
+<div class="inside-desc">Pydantic request/response validation wired all the way through, Spanish and English out of the box.</div>
+</div>
+</div>
+
+<div class="code-card">
+<div class="code-head">services/ai_service.py — the error-handling pattern</div>
+<div class="code-body"><span class="kw">try</span>:
+    response = client.models.generate_content(model=settings.gemini_model, contents=prompt)
+    data = json.loads(response.text)
+<span class="kw">except</span> (json.JSONDecodeError, KeyError):
+    <span class="cm"># the AI answered, just not in the shape we asked for</span>
+    <span class="kw">raise</span> <span class="fn">ValueError</span>(<span class="str">"Gemini returned malformed JSON"</span>)
+<span class="kw">except</span> Exception:
+    <span class="cm"># the AI provider itself is unreachable</span>
+    <span class="kw">raise</span> <span class="fn">ConnectionError</span>(<span class="str">"Could not reach Gemini API"</span>)</div>
+</div>
+</section>
+
+<!-- HONEST -->
+<section class="block">
+<div class="sec-label">THE HONEST PART</div>
+<h2 class="sec-h">What it doesn't have — on purpose.</h2>
+<div class="honest">
+<div class="honest-h">⚠ HEADS UP</div>
+<p><strong>This version is intentionally minimal — no login/auth and no database yet.</strong> It's built so the AI-integration pattern is easy to read and copy, and structured so you can drop auth or a database in without a rewrite. No client data, no API keys included — just the pattern, so you can skip the setup and get straight to building.</p>
+</div>
+</section>
+
+<!-- FINAL CTA -->
+<section id="final-cta">
+<div class="sec-label" style="justify-content:center">GET THE PATTERN</div>
+<h2 class="cta-h">Stop rebuilding it <span>from scratch.</span></h2>
+<p class="cta-sub">A clean FastAPI + AI integration pattern (routers, services, schemas) ready to extend — with tests, docs, and no hidden gotchas.</p>
+<a href="https://saljazz5.gumroad.com/l/ujogq" target="_blank" class="btn-p">Get the Starter Kit — $9 ↗</a>
+<div class="cta-price">30-DAY MONEY BACK GUARANTEE · saljazz5.gumroad.com/l/ujogq</div>
+</section>
+
+<footer>
+<p class="footer-t">© 2026 <span>Alejandro Garcia Sanchez</span></p>
+<div class="footer-links">
+<a href="index.html">Portfolio</a>
+<a href="https://github.com/GerAle30" target="_blank">GitHub</a>
+<a href="mailto:Garciasalj@gmail.com">Email</a>
+</div>
+</footer>
+
+</body>
+</html>
